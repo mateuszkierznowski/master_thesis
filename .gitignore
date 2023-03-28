@@ -127,3 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+Filenames
+UCF101_subset
+.idea
+*.mp4
