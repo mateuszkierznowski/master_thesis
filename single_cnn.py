@@ -18,19 +18,57 @@ img_width, img_height = 224, 224
 num_classes = 10
 
 # load InceptionV3 model without top layer (i.e., without the fully connected layer)
-base_model = applications.InceptionV3(weights='imagenet',
-                                include_top=False,
-                                input_shape=(img_width, img_height, 3))
-base_model.trainable = False
+# base_model = applications.InceptionV3(weights='imagenet',
+#                                 include_top=False,
+#                                 input_shape=(img_width, img_height, 3))
+# base_model.trainable = False
+#
+# add_model = Sequential()
+# add_model.add(base_model)
+# add_model.add(GlobalAveragePooling2D())
+# add_model.add(Dropout(0.5))
+# add_model.add(Dense(num_classes, activation='softmax'))
+from keras.models import Sequential
+from keras.layers import Conv2D, MaxPooling2D, Dropout, Flatten, Dense
 
-add_model = Sequential()
-add_model.add(base_model)
-add_model.add(GlobalAveragePooling2D())
-add_model.add(Dropout(0.5))
-add_model.add(Dense(num_classes, activation='softmax'))
+# Define the input shape
+input_shape = (224, 224, 3)
 
-model = add_model
-model.compile(loss='categorical_crossentropy', optimizer=optimizers.SGD(lr=1e-4, momentum=0.9), metrics=['accuracy'])
+# Define the model
+model = Sequential()
+
+# Add the convolutional layer and pooling layer
+model.add(Conv2D(64, (3, 3), activation='relu', input_shape=input_shape))
+model.add(MaxPooling2D((2, 2)))
+model.add(Conv2D(128, (3, 3), activation='relu'))
+model.add(MaxPooling2D((2, 2)))
+model.add(Conv2D(256, (3, 3), activation='relu'))
+model.add(Conv2D(256, (3, 3), activation='relu'))
+model.add(MaxPooling2D((2, 2)))
+model.add(Conv2D(512, (3, 3), activation='relu'))
+model.add(Conv2D(512, (3, 3), activation='relu'))
+model.add(MaxPooling2D((2, 2)))
+model.add(Conv2D(512, (3, 3), activation='relu'))
+model.add(Conv2D(512, (3, 3), activation='relu'))
+model.add(MaxPooling2D((2, 2)))
+
+# Flatten the output from the convolutional layers
+model.add(Flatten())
+
+# Add the fully connected layers
+
+model.add(Dense(1000, activation='relu'))
+model.add(Dropout(0.5))
+model.add(Dense(10, activation='softmax'))
+
+# Compile the model
+model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+
+# Print the model summary
+# model.summary()
+#
+# model = add_model
+# model.compile(loss='categorical_crossentropy', optimizer=optimizers.SGD(lr=1e-4, momentum=0.9), metrics=['accuracy'])
 
 subset_paths = {'train_master': pathlib.Path(r"C:\Users\User\Desktop\Master_videos_all\train"),
                 'val_master': pathlib.Path(r"C:\Users\User\Desktop\Master_videos_all\val")}
@@ -62,8 +100,3 @@ history = model.fit(x=train_ds,
 #take labels
 fg = FrameGenerator(subset_paths['train_master'], n_frames, training=True)
 labels = list(fg.class_ids_for_name.keys())
-
-
-
-
-
