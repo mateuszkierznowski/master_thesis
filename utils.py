@@ -250,7 +250,6 @@ def frames_from_video_file(video_path, n_frames, output_size = (224,224), frame_
   src.set(cv2.CAP_PROP_POS_FRAMES, start)
   # ret is a boolean indicating whether read was successful, frame is the image itself
   ret, frame = src.read()
-  print(ret)
   if ret:
     result.append(format_frames(frame, output_size))
 
@@ -299,10 +298,9 @@ class FrameGenerator:
       try:
         video_frames = frames_from_video_file(path, self.n_frames)
       except IndexError:
-        pass
+        continue
 
       label = self.class_ids_for_name[name] # Encode labels
       if self.n_frames == 1:
         video_frames = video_frames.reshape(224, 224, 3)
-      print(video_frames.shape)
       yield video_frames, label
