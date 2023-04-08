@@ -3,6 +3,8 @@ import random
 import pathlib
 import itertools
 import collections
+import pandas as pd
+import os
 
 import cv2
 import einops
@@ -304,3 +306,24 @@ class FrameGenerator:
       if self.n_frames == 1:
         video_frames = video_frames.reshape(224, 224, 3)
       yield video_frames, label
+
+def create_dataframe(folder_path):
+  dfs = []
+
+  # iterate through the subdirectories
+  for subfolder_name in os.listdir(folder_path):
+    # check if the item in the folder is a subdirectory
+    if os.path.isdir(os.path.join(folder_path, subfolder_name)):
+      # create a list of the picture files in the subdirectory
+      picture_files = [f for f in os.listdir(os.path.join(folder_path, subfolder_name))]
+      # create a dataframe for the picture files in the subdirectory
+      df = pd.DataFrame({'video_name': picture_files})
+      # add a column to the dataframe with the subdirectory name
+      df['tag'] = subfolder_name
+      # append the dataframe to the list of dataframes
+      dfs.append(df)
+
+  # concatenate the dataframes for each subdirectory into a single dataframe
+  df = pd.concat(dfs, ignore_index=True)
+
+  return df
