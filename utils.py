@@ -304,7 +304,7 @@ class FrameGenerator:
 
       label = self.class_ids_for_name[name] # Encode labels
       if self.n_frames == 1:
-        video_frames = video_frames.reshape(224, 224, 3)
+        video_frames = video_frames.reshape(112, 112, 3)
       yield video_frames, label
 
 def create_dataframe(folder_path):
