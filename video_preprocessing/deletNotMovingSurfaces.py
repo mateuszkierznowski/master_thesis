@@ -58,7 +58,7 @@ cap = cv2.VideoCapture(r'C:\Users\User\Desktop\Master_videos_all\train\BarbellCu
 fps = cap.get(cv2.CAP_PROP_FPS)
 remover = Remover()
 writer = None
-writer = cv2.VideoWriter("Filenames/example_with_skeleton_only_fv.avi", cv2.VideoWriter_fourcc(*'XVID'), 30, (600, 800))
+writer = cv2.VideoWriter("Filenames/tutaj.avi", cv2.VideoWriter_fourcc(*'XVID'), 24, (224, 224))
 i = 0
 while cap.isOpened():
     ret, frame = cap.read()  # read video
@@ -74,7 +74,7 @@ while cap.isOpened():
     #                              img.size)  # video writer for output
 
     out = remover.process(img, type='map')  # same as image, except for 'rgba' which is not for video.
-    writer.write(cv2.cvtColor(cv2.resize(out, (600, 800)), cv2.COLOR_BGR2RGB))
+    writer.write(cv2.cvtColor(cv2.resize(out, (224, 224)), cv2.COLOR_BGR2RGB))
     cv2.imshow('Output', out)
     i += 1
     print(i)

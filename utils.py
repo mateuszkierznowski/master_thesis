@@ -307,6 +307,7 @@ class FrameGenerator:
 
   def get_files_and_class_names(self):
     video_paths = list(self.path.glob('*/*.mp4'))
+    video_paths += list(self.path.glob('*/*.avi'))
     classes = [p.parent.name for p in video_paths]
     return video_paths, classes
 

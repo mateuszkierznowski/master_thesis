@@ -14,7 +14,7 @@ pose = mp_pose.Pose(
 
 cap = cv2.VideoCapture(
     r'C:\Users\User\Desktop\Master_videos_all\train\Squad\317115823_1310457289755916_8889208919929233640_n.mp4')
-writer = cv2.VideoWriter("Filenames/person_masks.avi", cv2.VideoWriter_fourcc(*'XVID'), 24, (600, 800))
+writer = cv2.VideoWriter("Filenames/person_masks.avi", cv2.VideoWriter_fourcc(*'XVID'), 24, (224, 224))
 pose_landmark_lst = []
 frame_lst = []
 results_lst = []
@@ -44,7 +44,7 @@ while cap.isOpened():
         cv2.imshow('Output', frame)
 
 
-        frame = cv2.resize(frame, (600, 800))
+        frame = cv2.resize(frame, (224, 224))
         writer.write(frame)
 
 
