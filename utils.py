@@ -272,7 +272,7 @@ def frames_from_video_file(video_path, n_frames, output_size = (112,112), frame_
 
 
 class FrameGenerator:
-  def __init__(self, path, n_frames, training = False, augmentation=True):
+  def __init__(self, path, n_frames, training=False, augmentation=True, frame_shape=112):
     """ Returns a set of frames with their associated label.
 
       Args:
@@ -286,6 +286,7 @@ class FrameGenerator:
     self.class_names = sorted(set(p.name for p in self.path.iterdir() if p.is_dir()))
     self.class_ids_for_name = dict((name, idx) for idx, name in enumerate(self.class_names))
     self.augmentation = augmentation
+    self.frame_shape = frame_shape
 
   def image_augmentation(self, image_tensor):
     # Randomly flip the image horizontally
@@ -298,7 +299,7 @@ class FrameGenerator:
     image_tensor = tf.image.random_contrast(image_tensor, lower=0.5, upper=1.5)
 
     # Randomly rotate the image
-    image_tensor = tf.image.rot90(image_tensor, k=tf.random.uniform(shape=[], minval=0, maxval=4, dtype=tf.int32))
+    #image_tensor = tf.image.rot90(image_tensor, k=tf.random.uniform(shape=[], minval=0, maxval=4, dtype=tf.int32))
 
     # Resize the image to a desired shape
     # image_tensor = tf.image.resize(image_tensor, [12, 224, 224])
@@ -322,7 +323,7 @@ class FrameGenerator:
     for path, name in pairs:
       try:
         if self.augmentation:
-          video_frames = frames_from_video_file(path, self.n_frames)
+          video_frames = frames_from_video_file(path, self.n_frames, output_size=(self.frame_shape, self.frame_shape))
           video_frames = self.image_augmentation(video_frames)
         else:
           video_frames = frames_from_video_file(path, self.n_frames)
@@ -333,10 +334,10 @@ class FrameGenerator:
 
       if self.n_frames == 1:
         if self.augmentation:
-          video_frames = video_frames.reshape(112, 112, 3)
+          video_frames = video_frames.reshape(self.frame_shape, self.frame_shape, 3)
           video_frames = self.image_augmentation(video_frames)
         else:
-          video_frames = video_frames.reshape(112, 112, 3)
+          video_frames = video_frames.reshape(self.frame_shape, self.frame_shape, 3)
       yield video_frames, label
 
 def create_dataframe(folder_path):
