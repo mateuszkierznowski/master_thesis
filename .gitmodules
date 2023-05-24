@@ -1,3 +1,0 @@
-[submodule "video_preprocessing/vidau"]
-	path = video_preprocessing/vidau
-	url = https://github.com/okankop/vidaug.git
