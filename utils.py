@@ -175,7 +175,7 @@ class FrameGenerator:
       va.RandomRotate(degrees=15),  # randomly rotates the video with a degree randomly choosen from [-10, 10]
       sometimes_05(va.HorizontalFlip()),
       #sometimes_01(va.PiecewiseAffineTransform()),
-      sometimes_01(va.Superpixel(10)),
+      #sometimes_01(va.Superpixel(10)),
       sometimes_02(va.SomeOf([va.Add(10), va.Multiply(1.2)], N=1)),
       sometimes_02(va.SomeOf([va.Downsample(.8), va.Upsample(2)], N=1))
     ])
