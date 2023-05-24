@@ -4,6 +4,8 @@ import pathlib
 import collections
 import pandas as pd
 import os
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 import cv2
 import numpy as np
@@ -242,3 +244,64 @@ def create_dataframe(folder_path):
   df = pd.concat(dfs, ignore_index=True)
 
   return df
+
+def get_recall_precision(cm):
+  recall = np.mean(np.diag(cm) / np.sum(cm, axis = 1))
+  precision = np.mean(np.diag(cm) / np.sum(cm, axis = 0))
+  f1 = 2 * (recall * precision) / (recall + precision)
+
+  return recall, precision, f1
+
+def get_actual_predicted_labels_per_video(dataset, model):
+  """
+    Create a list of actual ground truth values and the predictions from the model.
+
+    Args:
+      dataset: An iterable data structure, such as a TensorFlow Dataset, with features and labels.
+
+    Return:
+      Ground truth and predicted values for a particular dataset.
+  """
+  actual = [labels for _, labels in dataset.unbatch()]
+  predicted = model.predict(dataset)
+
+  actual = tf.stack(actual, axis=0)
+  predicted = tf.concat(predicted, axis=0)
+  predicted = tf.argmax(predicted, axis=1)
+
+  return actual, predicted
+
+def get_actual_predicted_labels_per_batch(dataset, model):
+  """
+    Create a list of actual ground truth values and the predictions from the model.
+
+    Args:
+      dataset: An iterable data structure, such as a TensorFlow Dataset, with features and labels.
+
+    Return:
+      Ground truth and predicted values for a particular dataset.
+  """
+  actual = [labels for _, labels in dataset.unbatch()]
+  predicted = model.predict(dataset)
+  predicted = tf.argmax(predicted, axis=1)
+
+  return actual, predicted
+
+def plot_confusion_matrix(actual, predicted, labels, ds_type, save_plot=False):
+  cm = tf.math.confusion_matrix(actual, predicted)
+  ax = sns.heatmap(cm, annot=True, fmt='g')
+  sns.set(rc={'figure.figsize': (12, 12)})
+  sns.set(font_scale=1.4)
+  ax.set_title('Confusion matrix of action recognition for ' + ds_type)
+  ax.set_xlabel('Predicted Action')
+  ax.set_ylabel('Actual Action')
+  plt.xticks(rotation=90)
+  plt.yticks(rotation=0)
+  ax.xaxis.set_ticklabels(labels)
+  ax.yaxis.set_ticklabels(labels)
+  if save_plot:
+    plt.savefig(save_plot)
+
+  plt.show()
+
+  return cm
