@@ -7,11 +7,10 @@ import os
 
 import cv2
 import numpy as np
-import remotezip as rz
 
 import tensorflow as tf
 
-from video_preprocessing.vidau.vidaug import augmentors as va
+from video_preprocessing.vidaugm.vidaug import augmentors as va
 
 
 
@@ -43,24 +42,6 @@ def get_files_per_class(files):
     files_for_class[class_name].append(fname)
   return files_for_class
 
-def download_from_zip(zip_url, to_dir, file_names):
-  """
-    Download the contents of the zip file from the zip URL.
-
-    Args:
-      zip_url: Zip URL containing data.
-      to_dir: Directory to download data to.
-      file_names: Names of files to download.
-  """
-  with rz.RemoteZip(zip_url) as zip:
-    for fn in tqdm.tqdm(file_names):
-      class_name = get_class(fn)
-      zip.extract(fn, str(to_dir / class_name))
-      unzipped_file = to_dir / class_name / fn
-
-      fn = pathlib.Path(fn).parts[-1]
-      output_file = to_dir / class_name / fn
-      unzipped_file.rename(output_file,)
 
 def split_class_lists(files_for_class, count):
   """
