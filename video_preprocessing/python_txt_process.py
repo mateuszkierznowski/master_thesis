@@ -7,7 +7,6 @@ path_final: str = r"C:\Users\User\Desktop\altered_skeleton"
 path_final_2: str = r"C:\Users\User\Desktop\human"
 
 list_folders: list = os.listdir(path_val)
-list_folders = ["Pullup", 'Pushup']
 
 #path_vid = path_train
 folder_name = 'train'
@@ -33,14 +32,14 @@ def create_ps_script(script_name: str, path_vid: str, path_final_, type_: str, t
     script.close()
 
 
-create_ps_script("video_preprocessing/script_ps_skeleton_train_pullup_pushup.ps1", r'C:\Users\User\Desktop\Master_videos_all\train_2',\
+create_ps_script("video_preprocessing/script_ps_skeleton_train.ps1", r'C:\Users\User\Desktop\Master_videos_all\train_2',\
                  r"C:/Users/User/Desktop/altered_skeleton", "skeleton", "train")
 
-create_ps_script("video_preprocessing/script_ps_skeleton_test_pullup_pushup.ps1", r'C:\Users\User\Desktop\Master_videos_all\val_2', \
+create_ps_script("video_preprocessing/script_ps_skeleton_test.ps1", r'C:\Users\User\Desktop\Master_videos_all\val_2', \
                  r"C:/Users/User/Desktop/altered_skeleton", "skeleton", "test")
 
-create_ps_script("video_preprocessing/script_ps_human_train_pullup_pushup.ps1", r'C:\Users\User\Desktop\Master_videos_all\train_2', \
+create_ps_script("video_preprocessing/script_ps_human_trainps1", r'C:\Users\User\Desktop\Master_videos_all\train_2', \
                  r"C:/Users/User\Desktop\human", "human", "train")
 
-create_ps_script("video_preprocessing/script_ps_human_test_pullup_pushup.ps1", r'C:\Users\User\Desktop\Master_videos_all\val_2', \
+create_ps_script("video_preprocessing/script_ps_human_test.ps1", r'C:\Users\User\Desktop\Master_videos_all\val_2', \
                  r"C:\Users\User\Desktop\human", "human", "test")

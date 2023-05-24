@@ -17,7 +17,7 @@ import tensorflow as tf
 import keras
 from keras import layers
 
-from video_preprocessing.vidaug.vidaug import augmentors as va
+from video_preprocessing.vidau.vidaug import augmentors as va
 
 
 class Conv2Plus1D(keras.layers.Layer):
