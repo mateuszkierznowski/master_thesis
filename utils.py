@@ -99,7 +99,7 @@ def format_frames(frame, output_size):
   frame = tf.image.resize_with_pad(frame, *output_size)
   return frame
 
-def frames_from_video_file(video_path, n_frames, output_size = (112,112), frame_step = 2):
+def frames_from_video_file(video_path, n_frames, output_size = (112,112), frame_step = 1):
   """
     Creates frames from each video file present for each category.
 
