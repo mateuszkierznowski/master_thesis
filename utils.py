@@ -203,6 +203,10 @@ class FrameGenerator:
         if self.augmentation:
           video_frames = frames_from_video_file(path, self.n_frames, output_size=(self.frame_shape, self.frame_shape), frame_step = self.frame_step)
           video_frames = self.image_augmentation(video_frames)
+          #augmentation deletes input with 0, if it happens replace last frame a few times to fulfill size
+          if len(video_frames) < self.n_frames:
+            for i in range(self.n_frames - len(video_frames)):
+              video_frames.append(video_frames[-1])
         else:
           video_frames = frames_from_video_file(path, self.n_frames)
       except IndexError:
