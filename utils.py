@@ -17,6 +17,8 @@ import tensorflow as tf
 import keras
 from keras import layers
 
+from video_preprocessing.vidaug.vidaug import augmentors as va
+
 
 class Conv2Plus1D(keras.layers.Layer):
   def __init__(self, filters, kernel_size, padding):
@@ -263,6 +265,7 @@ def frames_from_video_file(video_path, n_frames, output_size = (112,112), frame_
         result.append(frame)
       else:
         result.append(np.zeros_like(result[0]))
+
   src.release()
   result = np.array(result)[..., [2, 1, 0]]
 
@@ -272,7 +275,7 @@ def frames_from_video_file(video_path, n_frames, output_size = (112,112), frame_
 
 
 class FrameGenerator:
-  def __init__(self, path, n_frames, training=False, augmentation=True, frame_shape=112):
+  def __init__(self, path, n_frames, training=False, augmentation=True, frame_shape=112, frame_step=2):
     """ Returns a set of frames with their associated label.
 
       Args:
@@ -287,22 +290,23 @@ class FrameGenerator:
     self.class_ids_for_name = dict((name, idx) for idx, name in enumerate(self.class_names))
     self.augmentation = augmentation
     self.frame_shape = frame_shape
+    self.frame_step = frame_step
 
   def image_augmentation(self, image_tensor):
-    # Randomly flip the image horizontally
-    image_tensor = tf.image.random_flip_left_right(image_tensor)
+    sometimes_05 = lambda aug: va.Sometimes(.5, aug)
+    sometimes_02 = lambda aug: va.Sometimes(.2, aug)
+    sometimes_01 = lambda aug: va.Sometimes(.1, aug)
 
-    # Randomly adjust the brightness of the image
-    image_tensor = tf.image.random_brightness(image_tensor, max_delta=0.2)
+    seq = va.Sequential([
+      va.RandomRotate(degrees=15),  # randomly rotates the video with a degree randomly choosen from [-10, 10]
+      sometimes_05(va.HorizontalFlip()),
+      #sometimes_01(va.PiecewiseAffineTransform()),
+      sometimes_01(va.Superpixel(10)),
+      sometimes_02(va.SomeOf([va.Add(10), va.Multiply(1.2)], N=1)),
+      sometimes_02(va.SomeOf([va.Downsample(.8), va.Upsample(2)], N=1))
+    ])
 
-    # Randomly adjust the contrast of the image
-    image_tensor = tf.image.random_contrast(image_tensor, lower=0.5, upper=1.5)
-
-    # Randomly rotate the image
-    #image_tensor = tf.image.rot90(image_tensor, k=tf.random.uniform(shape=[], minval=0, maxval=4, dtype=tf.int32))
-
-    # Resize the image to a desired shape
-    # image_tensor = tf.image.resize(image_tensor, [12, 224, 224])
+    image_tensor = seq(np.array(image_tensor))
 
     return image_tensor
 
@@ -323,7 +327,7 @@ class FrameGenerator:
     for path, name in pairs:
       try:
         if self.augmentation:
-          video_frames = frames_from_video_file(path, self.n_frames, output_size=(self.frame_shape, self.frame_shape))
+          video_frames = frames_from_video_file(path, self.n_frames, output_size=(self.frame_shape, self.frame_shape), frame_step = self.frame_step)
           video_frames = self.image_augmentation(video_frames)
         else:
           video_frames = frames_from_video_file(path, self.n_frames)
