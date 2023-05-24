@@ -176,8 +176,8 @@ class FrameGenerator:
       sometimes_05(va.HorizontalFlip()),
       #sometimes_01(va.PiecewiseAffineTransform()),
       #sometimes_01(va.Superpixel(10)),
-      sometimes_02(va.SomeOf([va.Add(10), va.Multiply(1.2)], N=1)),
-      sometimes_02(va.SomeOf([va.Downsample(.8), va.Upsample(2)], N=1))
+      #sometimes_02(va.SomeOf([va.Add(10), va.Multiply(1.2)], N=1)),
+      #sometimes_02(va.SomeOf([va.Downsample(.8), va.Upsample(2)], N=1))
     ])
 
     image_tensor = seq(np.array(image_tensor))
