@@ -1,0 +1,3 @@
+[submodule "video_preprocessing/vidaugm"]
+	path = video_preprocessing/vidaugm
+	url = https://github.com/mateuszkierznowski/vidaug.git
