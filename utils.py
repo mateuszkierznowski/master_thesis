@@ -182,7 +182,9 @@ class FrameGenerator:
       #sometimes_02(va.SomeOf([va.Downsample(.8), va.Upsample(2)], N=1))
     ])
 
-    image_tensor = seq(np.array(image_tensor))
+    frames: np.array = seq(np.array(image_tensor))
+
+    image_tensor: np.array = np.array(frames)
 
     return image_tensor
 
