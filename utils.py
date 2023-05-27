@@ -140,7 +140,7 @@ def frames_from_video_file(video_path, n_frames, output_size = (112,112), frame_
         frame = format_frames(frame, output_size)
         result.append(frame)
       else:
-        result.append(np.zeros_like(result[0]))
+        result.append(result[-1])
 
   src.release()
   result = np.array(result)[..., [2, 1, 0]]
@@ -176,8 +176,8 @@ class FrameGenerator:
     seq = va.Sequential([
       va.RandomRotate(degrees=15),  # randomly rotates the video with a degree randomly choosen from [-10, 10]
       sometimes_05(va.HorizontalFlip()),
-      #sometimes_01(va.PiecewiseAffineTransform()),
-      #sometimes_01(va.Superpixel(10)),
+      sometimes_01(va.PiecewiseAffineTransform()),
+      sometimes_01(va.Superpixel(10)),
       #sometimes_02(va.SomeOf([va.Add(10), va.Multiply(1.2)], N=1)),
       #sometimes_02(va.SomeOf([va.Downsample(.8), va.Upsample(2)], N=1))
     ])
@@ -207,12 +207,8 @@ class FrameGenerator:
         if self.augmentation:
           video_frames = frames_from_video_file(path, self.n_frames, output_size=(self.frame_shape, self.frame_shape), frame_step = self.frame_step)
           video_frames = self.image_augmentation(video_frames)
-          #augmentation deletes input with 0, if it happens replace last frame a few times to fulfill size
-          if len(video_frames) < self.n_frames:
-            for i in range(self.n_frames - len(video_frames)):
-              video_frames.append(video_frames[-1])
         else:
-          video_frames = frames_from_video_file(path, self.n_frames)
+          video_frames = frames_from_video_file(path, self.n_frames,output_size=(self.frame_shape, self.frame_shape), frame_step = self.frame_step)
       except IndexError:
         continue
 
