@@ -118,12 +118,13 @@ output_signature = (tf.TensorSpec(shape=(None, None, None, 3), dtype=tf.float32)
 train_ds_no_aug = tf.data.Dataset.from_generator(FrameGenerator(subset_paths['train_master'], n_frames, augmentation=False, training=False, frame_step=52),
                                           output_signature=output_signature)
 
-train_ds_aug = tf.data.Dataset.from_generator(FrameGenerator(subset_paths['train_master'], n_frames, augmentation=True,  training=False, frame_step=52),
+train_ds_aug = tf.data.Dataset.from_generator(FrameGenerator(subset_paths['train_master'], n_frames, augmentation=True, training=False, frame_step=52),
                                           output_signature=output_signature)
 
 
 train_gen = FrameGenerator(subset_paths['train_master'], n_frames, augmentation=True, training=False, frame_step=1)
 train_gen16 = FrameGenerator(subset_paths['train_master'], n_frames, augmentation=True, training=False, frame_step=16)
+
 def plot_frames(frames):
     fig, axes = plt.subplots(nrows=3, ncols=4, figsize=(12, 9))
 
@@ -168,6 +169,9 @@ for i in range(1000):
 plot_frames(frames)
 plot_frames(frames_2)
 
+for frame in frames_2:
+    print(frame.shape)
+
 # frame = tf.image.convert_image_dtype(frames[0:10], tf.float32)
 # frame = tf.image.resize_with_pad(frame, *(224, 224))
 
@@ -194,4 +198,5 @@ path_to_rename = r"C:\Users\User\Desktop\Master_videos_all\val_2\Pullup"
 for name in os.listdir(path_to_rename):
     if not name.startswith(".g"):
         os.rename(f"{path_to_rename}/{name}", f"{path_to_rename}/{name.replace('_avi', '.avi')}")
+
 
