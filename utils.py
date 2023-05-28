@@ -7,9 +7,7 @@ import pandas as pd
 import os
 
 import cv2
-import einops
 import numpy as np
-import remotezip as rz
 import seaborn as sns
 import matplotlib.pyplot as plt
 
